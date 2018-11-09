@@ -11,13 +11,54 @@ const composeEnhancers = composeWithDevTools({
  */
 import { watcherLoginSaga } from './login.saga';
 const sagaMiddleware = createSagaMiddleware()
-/* End */
 
-const store = createStore(() => {}, composeEnhancers(
-  applyMiddleware(sagaMiddleware),
-  )
+/**
+ * Thunk middleware
+ */
+import thunk from 'redux-thunk';
+import { loginThunk, throwException } from './login.thunk';
+
+/**
+ * Observable middleware
+ */
+import { createEpicMiddleware } from 'redux-observable';
+import rootEpics from './root.epics';
+
+const epicsMiddleware = createEpicMiddleware()
+
+/**
+ * Custom middleware
+ */
+import { log, traceCapture } from './redux.middleware';
+
+/**
+ * Import reducer 
+ */
+import { initReducer } from './reducers';
+
+const store = createStore(
+  initReducer,
+  composeEnhancers(
+    // applyMiddleware(sagaMiddleware),
+    applyMiddleware(epicsMiddleware, sagaMiddleware),
+  ),
 )
 
+/**
+ * Run saga watcher
+ */
 sagaMiddleware.run(watcherLoginSaga);
+
+/**
+ * Run observable middleware
+ */
+epicsMiddleware.run(rootEpics);
+
+ /**
+  * Dispatch a thunk action
+  */
+ store.dispatch({type: 'Init_APP'});
+//  store.dispatch(loginThunk());
+// store.dispatch(throwException());
 
 export default store;

@@ -1,6 +1,7 @@
 import { createStore, applyMiddleware } from 'redux'
 import { composeWithDevTools } from 'redux-devtools-extension';
 import store from './store';
+import { loginThunk } from './login.thunk';
 
 class App {
   constructor() {
@@ -12,7 +13,7 @@ class App {
       4
     ]
     console.log(spread);
-    store.dispatch({type: 'run app'});
+    store.dispatch({ type: 'run app' });
   }
 }
 

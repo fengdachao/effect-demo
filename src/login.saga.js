@@ -1,6 +1,7 @@
 import { take, fork, call, takeEvery, put, cancel } from 'redux-saga/effects';
 
 export function* loginSaga(action) {
+  console.log('loginSaga handler')
   yield put({ type: 'ShowModal' })
   const requestAction = yield take('LoginRequest');
   console.log(requestAction);
@@ -13,6 +14,7 @@ export function* watcherLoginSaga() {
   let task;
   while(true) {
     const action = yield take('Login');
+    console.log('take login action');
     if(task) {
       yield cancel(task);
       console.log(task);
